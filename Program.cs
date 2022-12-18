@@ -189,6 +189,7 @@ namespace Labb3_databas_AhlingsSchoolProject
 
                 Console.WriteLine("Type the class you want to check to the letter: ");
                 var userInput = Console.ReadLine();
+                
                 var classChoice = from a in Context.Schools
                                   join e in Context.Students on a.FkStudentId equals e.StudentId
                                   join b in Context.PersonalInformations on e.FkPersonIdStudent equals b.PersonId
@@ -197,21 +198,44 @@ namespace Labb3_databas_AhlingsSchoolProject
                                   where a.FkClassName == userInput
                                   select new
                                   {
-                                      School1 = a.FkClassName,
                                       Names = b.Fname,
                                       grade = n.Grade,
                                       gradeset = n.GradeSet
 
 
                                   };
-
-                Console.WriteLine("ClassName:       Name:     Grade:     GradingDate   ");
+                
+                Console.WriteLine("Name:     Grade:     GradingDate   ");
                 foreach (var c in classChoice)
                 {
-                    Console.WriteLine($"{c.School1}          {c.Names}     {c.grade}       {c.gradeset}");
+                    Console.WriteLine($"{c.Names}     {c.grade}       {c.gradeset}");
 
 
                 }
+
+                Console.WriteLine(new string('-', (60)));
+
+
+                Console.WriteLine("Which class would you like to see the average score in?");
+                var Average = Console.ReadLine();
+                var gradeAverage = (from a in Context.GradingTables
+                                    join b in Context.Classes on a.FkClassId equals b.ClassId
+                                    where b.ClassName == Average
+                                    select a.Grade).Average();
+                var gradeAverage1 = (from a in Context.GradingTables
+                                    join b in Context.Classes on a.FkClassId equals b.ClassId
+                                    where b.ClassName == Average
+                                    select a.Grade).Max();
+                var gradeAverage2 = (from a in Context.GradingTables
+                                     join b in Context.Classes on a.FkClassId equals b.ClassId
+                                     where b.ClassName == Average
+                                     select a.Grade).Min();
+
+
+                Console.WriteLine($"MaxScore: {gradeAverage1}\nMinScore {gradeAverage2}\nAverageScore {gradeAverage}");
+                Console.WriteLine(new string('-', (60)));
+
+
 
             }
             Console.WriteLine(new string('-', (60)));
